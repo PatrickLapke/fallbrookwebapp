@@ -22,4 +22,5 @@ class ReminderService {
   }
 }
 
-export default new ReminderService();
+const reminderService = new ReminderService();
+export default reminderService;
