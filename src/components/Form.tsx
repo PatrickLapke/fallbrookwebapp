@@ -1,29 +1,20 @@
-import { useState } from "react";
+import { useForm, FieldValues } from "react-hook-form";
 
 export default function Form() {
-  //Requires onChange to be used in input fields.
-  //State is updated after every letter type or deletion.
-  //Single source of truth by using the value attribute in HTML Input fields.
-  //Need to set onChange and Value attribute of every Input field.
-  const [user, setUser] = useState({
-    email: "",
-    password: "",
-  });
+  const { register, handleSubmit } = useForm();
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    console.log(user);
-  };
+  const onSubmit = (data: FieldValues) => console.log(data);
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-3">
         <label htmlFor="email" className="form-label">
           Email
         </label>
         <input
-          onChange={(event) => setUser({ ...user, email: event.target.value })}
-          value={user.email}
+          //Simplifies boilerplate so I do not need to write
+          //onChange, onBlur, name, ref, etc.
+          {...register("email")}
           id="email"
           type="text"
           className="form-control"
@@ -35,10 +26,7 @@ export default function Form() {
           Password
         </label>
         <input
-          onChange={(event) =>
-            setUser({ ...user, password: event.target.value })
-          }
-          value={user.password}
+          {...register("password")}
           id="password"
           type="password"
           className="form-control"
