@@ -1,19 +1,17 @@
-import { useRef } from "react";
+import { useState } from "react";
 
 export default function Form() {
-  //Working with useRef first. Not generally recommended to access the DOM directly.
-  const nameRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
-  const user = { name: "", password: "" };
+  //Requires onChange to be used in input fields.
+  //State is updated after every letter type or deletion.
+  //Single source of truth by using the value attribute in HTML Input fields.
+  //Need to set onChange and Value attribute of every Input field.
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (nameRef.current !== null) {
-      user.name = nameRef.current.value;
-    }
-    if (passwordRef.current !== null) {
-      user.password = passwordRef.current.value;
-    }
     console.log(user);
   };
 
@@ -23,14 +21,24 @@ export default function Form() {
         <label htmlFor="email" className="form-label">
           Email
         </label>
-        <input ref={nameRef} id="email" type="text" className="form-control" />
+        <input
+          onChange={(event) => setUser({ ...user, email: event.target.value })}
+          value={user.email}
+          id="email"
+          type="text"
+          className="form-control"
+        />
       </div>
+
       <div className="mb-3">
         <label htmlFor="password" className="form-label">
           Password
         </label>
         <input
-          ref={passwordRef}
+          onChange={(event) =>
+            setUser({ ...user, password: event.target.value })
+          }
+          value={user.password}
           id="password"
           type="password"
           className="form-control"
