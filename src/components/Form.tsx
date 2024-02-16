@@ -1,8 +1,24 @@
 import { useForm, FieldValues } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const schema = z.object({
+  email: z.string().email().min(5),
+  password: z.string().min(1),
+});
+
+type FormData = z.infer<typeof schema>;
 
 export default function Form() {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
 
+  //Simply logging the user object to the console.
   const onSubmit = (data: FieldValues) => console.log(data);
 
   return (
@@ -19,6 +35,7 @@ export default function Form() {
           type="text"
           className="form-control"
         />
+        {errors.email && <p className="text-danger">{errors.email.message}</p>}
       </div>
 
       <div className="mb-3">
@@ -31,8 +48,11 @@ export default function Form() {
           type="password"
           className="form-control"
         />
+        {errors.password && (
+          <p className="text-danger">{errors.password.message}</p>
+        )}
       </div>
-      <button className="btn btn-primary" type="submit">
+      <button disabled={!isValid} className="btn btn-primary" type="submit">
         Submit
       </button>
     </form>
