@@ -19,7 +19,21 @@ export default function Form() {
   });
 
   //Simply logging the user object to the console.
-  const onSubmit = (data: FieldValues) => console.log(data);
+  const onSubmit = async (data: FieldValues) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const responseData = await response.json();
+      console.log("Success: ", responseData);
+    } catch (error) {
+      console.log("Error Submitting form: ", error);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
