@@ -13,12 +13,11 @@ export default function Form() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
-  //Simply logging the user object to the console.
   const onSubmit = async (data: FieldValues) => {
     try {
       const response = await fetch("http://localhost:3000/api/users", {
@@ -66,7 +65,7 @@ export default function Form() {
           <p className="text-danger">{errors.password.message}</p>
         )}
       </div>
-      <button disabled={!isValid} className="btn btn-primary" type="submit">
+      <button className="btn btn-primary" type="submit">
         Submit
       </button>
     </form>
