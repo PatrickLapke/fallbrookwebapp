@@ -12,8 +12,23 @@ mongoose
   .catch((err) => console.error("Could not connect " + err));
 
 const userSchema = new mongoose.Schema({
-  email: String,
-  password: String,
+  fullName: {
+    type: String,
+    required: [true, "Name is required."],
+  },
+  email: {
+    type: String,
+    required: [true, "Email is required."],
+    unique: true,
+    match: [
+      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+      "Please fill a valid email address",
+    ],
+  },
+  password: {
+    type: String,
+    required: [true, "Password is required"],
+  },
 });
 
 const User = mongoose.model("User", userSchema);
@@ -21,6 +36,7 @@ const User = mongoose.model("User", userSchema);
 app.post("/api/users", async (req, res) => {
   try {
     const user = new User({
+      fullName: req.body.fullName,
       email: req.body.email,
       password: req.body.password,
     });
