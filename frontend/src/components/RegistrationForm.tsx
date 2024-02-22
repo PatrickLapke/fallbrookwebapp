@@ -1,6 +1,7 @@
 import { useForm, FieldValues } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { UserService } from "../services/user-service";
 
 const schema = z
   .object({
@@ -27,7 +28,8 @@ export default function Form() {
 
   //Simply logging the user object to the console.
   const onSubmit = (data: FieldValues) => {
-    console.log(data);
+    const userService = new UserService();
+    userService.registerNewUser(data);
   };
 
   return (

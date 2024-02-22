@@ -10,7 +10,7 @@ app.use(express.json());
 
 connectDB();
 
-const port = 3000;
+const port = 8000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 app.use("/api/users", userRoutes);
