@@ -1,8 +1,7 @@
-import { useForm, FieldValues } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import apiClient from "../services/api-client";
-import { AxiosError } from "axios";
+import { FieldValues, useForm } from "react-hook-form";
+import { z } from "zod";
+import { UserService } from "../services/user-service";
 
 const schema = z.object({
   email: z.string().email().min(5),
@@ -21,21 +20,8 @@ export default function Form() {
   });
 
   const onSubmit = async (data: FieldValues) => {
-    try {
-      const response = await apiClient.post("/users", data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      console.log("Success: ", response.data);
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      if (axiosError && axiosError.response) {
-        console.log("Axios Error: ", axiosError.response.data);
-      } else {
-        console.log("General error: ", error);
-      }
-    }
+    const userService = new UserService();
+    userService.userLogin(data);
   };
 
   return (

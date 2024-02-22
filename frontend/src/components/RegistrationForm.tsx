@@ -26,7 +26,6 @@ export default function Form() {
     resolver: zodResolver(schema),
   });
 
-  //Simply logging the user object to the console.
   const onSubmit = (data: FieldValues) => {
     const userService = new UserService();
     userService.registerNewUser(data);

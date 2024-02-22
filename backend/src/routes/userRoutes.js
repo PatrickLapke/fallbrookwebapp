@@ -18,4 +18,19 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(404).send("Email not found.");
+    }
+    if (user.password != password)
+      return res.status(401).send("Invalid password.");
+    res.send("Login Success!");
+  } catch (error) {
+    res.status(500).send("Error loggin in the user: " + error.message);
+  }
+});
+
 export default router;
