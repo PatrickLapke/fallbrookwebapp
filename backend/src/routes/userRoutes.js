@@ -1,17 +1,26 @@
 import express from "express";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
+import asyncMiddleware from "../middleware/async.js";
 
 const router = express.Router();
 
-function hashPassword(password) {
+const hashPassword = (password) => {
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(password, salt);
   return hash;
-}
+};
 
-router.post("/register", async (req, res) => {
-  try {
+router.post(
+  "/register",
+  asyncMiddleware(async (req, res) => {
+    const existingUser = await User.findOne({ email: req.body.email });
+    if (existingUser) {
+      const error = new Error("User already exists with this email.");
+      error.status = 409;
+      throw error;
+    }
+
     const user = new User({
       fullName: req.body.fullName,
       email: req.body.email,
@@ -20,10 +29,8 @@ router.post("/register", async (req, res) => {
 
     const result = await user.save();
     res.send(result);
-  } catch (error) {
-    res.status(500).send("Error creating the user: " + error.message);
-  }
-});
+  })
+);
 
 router.post("/login", async (req, res) => {
   try {

@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
+import error from "./middleware/error.js";
 
 const app = express();
 
@@ -14,3 +15,5 @@ const port = 8000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 app.use("/api/users", userRoutes);
+
+app.use(error);
