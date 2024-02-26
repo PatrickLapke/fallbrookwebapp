@@ -1,14 +1,21 @@
 import express from "express";
 import User from "../models/User.js";
+import bcrypt from "bcryptjs";
 
 const router = express.Router();
+
+function hashPassword(password) {
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(password, salt);
+  return hash;
+}
 
 router.post("/register", async (req, res) => {
   try {
     const user = new User({
       fullName: req.body.fullName,
       email: req.body.email,
-      password: req.body.password,
+      password: hashPassword(req.body.password),
     });
 
     const result = await user.save();
