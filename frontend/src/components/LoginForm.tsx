@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 import { UserService } from "../services/user-service";
+import { useState } from "react";
 
 const schema = z.object({
   email: z.string().email().min(5),
@@ -11,6 +12,10 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function Form() {
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -21,7 +26,17 @@ export default function Form() {
 
   const onSubmit = async (data: FieldValues) => {
     const userService = new UserService();
-    userService.userLogin(data);
+    try {
+      await userService.userLogin(data);
+      setSuccess(true);
+      setError(false);
+      setErrorMessage("");
+    } catch (error: unknown) {
+      setSuccess(false);
+      setError(true);
+      const err = error as Error;
+      setErrorMessage(err.message || "An unexpected error occurred.");
+    }
   };
 
   return (
@@ -58,6 +73,8 @@ export default function Form() {
       <button className="btn btn-primary" type="submit">
         Submit
       </button>
+      {success && <div>Registration successful!</div>}
+      {error && <div>{errorMessage}</div>}
     </form>
   );
 }
