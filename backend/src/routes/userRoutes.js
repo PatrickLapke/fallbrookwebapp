@@ -16,9 +16,9 @@ router.post(
   asyncMiddleware(async (req, res) => {
     const existingUser = await User.findOne({ email: req.body.email });
     if (existingUser) {
-      const error = new Error("User already exists with this email.");
-      error.status = 409;
-      throw error;
+      return res
+        .status(409)
+        .send({ message: "User already exists with this email." });
     }
 
     const user = new User({
@@ -32,19 +32,20 @@ router.post(
   })
 );
 
-router.post("/login", async (req, res) => {
-  try {
+router.post(
+  "/login",
+  asyncMiddleware(async (req, res) => {
     const { email, password } = req.body;
+
     const user = await User.findOne({ email: email });
     if (!user) {
-      return res.status(404).send("Email not found.");
+      return res.status(401).send({ message: "Email not found." });
     }
-    if (user.password != password)
-      return res.status(401).send("Invalid password.");
-    res.send("Login Success!");
-  } catch (error) {
-    res.status(500).send("Error loggin in the user: " + error.message);
-  }
-});
+    if (!bcrypt.compare(password, user.password))
+      return res.status(401).send({ message: "Password not found." });
+
+    res.send({ message: "Login Success!" });
+  })
+);
 
 export default router;
