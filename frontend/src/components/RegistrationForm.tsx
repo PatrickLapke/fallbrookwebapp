@@ -1,6 +1,7 @@
-import { useForm, FieldValues } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { FieldValues, useForm } from "react-hook-form";
+import { z } from "zod";
 import { UserService } from "../services/user-service";
 
 const schema = z
@@ -18,6 +19,10 @@ const schema = z
 type FormData = z.infer<typeof schema>;
 
 export default function Form() {
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -26,9 +31,19 @@ export default function Form() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: FieldValues) => {
+  const onSubmit = async (data: FieldValues) => {
     const userService = new UserService();
-    userService.registerNewUser(data);
+    try {
+      await userService.registerNewUser(data);
+      setSuccess(true);
+      setError(false);
+      setErrorMessage("");
+    } catch (error: unknown) {
+      setSuccess(false);
+      setError(true);
+      const err = error as Error;
+      setErrorMessage(err.message || "An unexpected error occurred.");
+    }
   };
 
   return (
@@ -94,6 +109,8 @@ export default function Form() {
       <button className="btn btn-primary" type="submit">
         Register
       </button>
+      {success && <div>Registration successful!</div>}
+      {error && <div>{errorMessage}</div>}
     </form>
   );
 }
