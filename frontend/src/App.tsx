@@ -1,10 +1,8 @@
 import "./App.css";
-
-import LoginForm from "./components/LoginForm";
-import RegistrationForm from "./components/RegistrationForm";
+import BookingTable from "./components/BookingTable";
 
 function App() {
-  return <LoginForm />;
+  return <BookingTable />;
 }
 
 export default App;

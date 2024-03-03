@@ -1,3 +1,16 @@
-body {
-  padding: 20px;
+/* Table */
+.table .available-cell {
+  background-color: green;
+}
+
+.table .booked-cell {
+  background-color: red;
+}
+
+.table .available-cell:hover {
+  background-color: darkgreen;
+}
+
+.table .booked-cell:hover {
+  background-color: darkred;
 }
